@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="Gestão de caixa da Barbearia Barbosa">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Barbosa • Gestão de Caixa</title>
+<style>
+:root{--bg:#101114;--panel:#1a1c21;--panel2:#22252c;--gold:#d5ad55;--gold2:#f0d58d;--text:#f6f4ef;--muted:#a7a8ad;--green:#65d49a;--red:#ff7777;--line:#343740}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#29251b 0,#101114 42%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:86px}
+header{padding:22px 18px 16px;position:sticky;top:0;background:#111114ed;backdrop-filter:blur(14px);z-index:5;border-bottom:1px solid #ffffff12}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border:1px solid var(--gold);border-radius:14px;display:grid;place-items:center;color:var(--gold);font-size:25px;font-weight:900}.brand h1{font-size:18px;margin:0;letter-spacing:.8px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+main{max-width:900px;margin:auto;padding:18px 15px}.section-title{font-size:16px;margin:22px 0 12px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{background:linear-gradient(145deg,#24252a,#191a1e);border:1px solid var(--line);border-radius:17px;padding:15px;min-width:0}.stat small{color:var(--muted);display:block;font-size:12px}.stat strong{display:block;font-size:22px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stat.in strong{color:var(--green)}.stat.out strong{color:var(--red)}
+.panel{background:#1a1c21;border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.tab{border:1px solid var(--line);background:#1a1c21;color:var(--muted);border-radius:12px;padding:10px 14px;white-space:nowrap;font-weight:650}.tab.active{background:var(--gold);color:#17130a;border-color:var(--gold)}
+label{display:block;color:#d7d7d7;font-size:12px;margin:13px 0 6px}input,select,textarea{width:100%;border:1px solid #3a3d45;background:#111318;color:var(--text);border-radius:11px;padding:12px;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--gold)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.service-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px}.service{border:1px solid #3b3e46;background:#202229;border-radius:12px;padding:11px;text-align:left;color:var(--text);min-height:62px}.service b{display:block;font-size:13px}.service span{color:var(--gold2);font-weight:750;font-size:13px}.service.selected{border-color:var(--gold);background:#3a3020;box-shadow:inset 0 0 0 1px var(--gold)}
+.selected-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.chip{background:#39301f;color:var(--gold2);padding:6px 9px;border-radius:20px;font-size:12px}
+.total-line{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:14px;padding-top:14px}.total-line strong{font-size:24px;color:var(--gold2)}
+.btn{border:0;border-radius:12px;padding:13px 16px;font-weight:800;background:var(--gold);color:#17130a;width:100%;margin-top:15px}.btn.secondary{background:#30333b;color:var(--text);border:1px solid #454954}.btn.danger{background:#482729;color:#ffb2b2}.toolbar{display:flex;gap:8px;flex-wrap:wrap}.toolbar .btn{width:auto;flex:1;margin-top:0}
+.hidden{display:none!important}.muted{color:var(--muted)}.empty{text-align:center;color:var(--muted);padding:25px 8px}
+.transaction{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #ffffff12}.transaction:last-child{border:0}.transaction b{display:block;font-size:14px}.transaction small{color:var(--muted)}.amount{font-weight:800;white-space:nowrap}.amount.plus{color:var(--green)}.amount.minus{color:var(--red)}.del{border:0;background:transparent;color:#ff9999;font-size:18px;padding:5px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#111114f2;border-top:1px solid #ffffff18;display:flex;justify-content:center;gap:6px;padding:9px 8px calc(9px + env(safe-area-inset-bottom));z-index:6}.bottom button{background:transparent;border:0;color:var(--muted);padding:7px 12px;border-radius:10px;font-size:11px;flex:1;max-width:150px}.bottom button.active{background:#39301f;color:var(--gold2)}.bottom span{display:block;font-size:18px;margin-bottom:2px}
+.notice{font-size:12px;color:var(--muted);line-height:1.5;margin-top:10px}.filter{display:flex;gap:8px;align-items:center}.filter input{min-width:0}
+.auth-screen{position:fixed;inset:0;z-index:30;background:radial-gradient(circle at top,#39301f,#101114 58%);display:grid;place-items:center;padding:20px}.auth-card{width:min(100%,420px);background:#1a1c21;border:1px solid #75603a;border-radius:22px;padding:25px;box-shadow:0 25px 80px #0009}.auth-logo{width:62px;height:62px;border:1px solid var(--gold);border-radius:18px;display:grid;place-items:center;color:var(--gold);font-size:34px;font-weight:900;margin:0 auto 15px}.auth-card h2{text-align:center;margin:0 0 5px}.auth-card p{text-align:center;color:var(--muted);font-size:13px;line-height:1.5}.auth-error{color:#ff9292!important;min-height:18px}.lock-btn{margin-left:auto;border:1px solid #51452f;background:#282319;color:var(--gold2);border-radius:10px;padding:8px 11px;font-size:12px}.brand{width:100%}
+@media(min-width:650px){.cards{grid-template-columns:repeat(4,1fr)}.service-grid{grid-template-columns:repeat(3,1fr)}main{padding:22px}.panel{padding:20px}}
+</style>
+</head>
+<body>
+<div id="authScreen" class="auth-screen">
+ <div class="auth-card">
+  <div class="auth-logo">B</div>
+  <h2>Acesso à Barbearia Barbosa</h2>
+  <p>Entre com seu e-mail e senha cadastrados pelo proprietário.</p>
+  <label for="loginEmail">E-mail</label><input id="loginEmail" type="email" autocomplete="username" placeholder="seu@email.com">
+  <label for="ownerPassword">Senha</label><input id="ownerPassword" type="password" autocomplete="current-password" placeholder="Sua senha">
+  <button id="authButton" class="btn" onclick="authenticateOwner()">Entrar</button>
+  <p id="authError" class="auth-error" role="alert"></p>
+  <p class="notice">O proprietário tem acesso completo. O sócio pode apenas visualizar os dados.</p>
+ </div>
+</div>
+<header><div class="brand"><div class="logo">B</div><div><h1>BARBOSA BARBEARIA</h1><p>Gestão de caixa • Área do proprietário</p></div><button class="lock-btn" onclick="lockApp()">Bloquear</button></div></header>
+<main>
+<section id="dashboard">
+ <div class="cards">
+  <div class="stat in"><small>Entradas do mês</small><strong id="monthIn">R$ 0,00</strong></div>
+  <div class="stat out"><small>Despesas do mês</small><strong id="monthOut">R$ 0,00</strong></div>
+  <div class="stat"><small>Saldo do mês</small><strong id="monthBalance">R$ 0,00</strong></div>
+  <div class="stat"><small>Atendimentos no mês</small><strong id="monthCount">0</strong></div>
+ </div>
+ <div id="partnerReadOnlyNote" class="panel hidden"><b>Modo de visualização do sócio</b><p class="notice">Você pode consultar os dados e relatórios, mas não pode registrar, editar ou excluir movimentações.</p></div>
+ <h2 class="section-title">Movimentações recentes</h2>
+ <div class="panel" id="recentList"><div class="empty">Nenhuma movimentação registrada.</div></div>
+ <div class="toolbar"><button class="btn" onclick="showPage('entry')">＋ Registrar entrada</button><button class="btn secondary" onclick="showPage('expense')">－ Registrar despesa</button></div>
+</section>
+<section id="entry" class="hidden">
+ <h2 class="section-title">Registrar atendimento</h2>
+ <div class="panel">
+  <label>Serviços realizados — selecione um ou mais</label>
+  <div class="service-grid" id="services"></div>
+  <div class="selected-list" id="selectedList"></div>
+  <div class="total-line"><span>Total do atendimento</span><strong id="serviceTotal">R$ 0,00</strong></div>
+  <label for="client">Cliente (opcional)</label><input id="client" placeholder="Nome do cliente">
+  <div class="grid2"><div><label for="entryDate">Data</label><input id="entryDate" type="date"></div><div><label for="payment">Forma de pagamento</label><select id="payment"><option>Pix</option><option>Dinheiro</option><option>Cartão de débito</option><option>Cartão de crédito</option><option>Outro</option></select></div></div>
+  <label for="entryNote">Observação (opcional)</label><input id="entryNote" placeholder="Ex.: desconto, comissão...">
+  <button class="btn" onclick="saveEntry()">Salvar entrada</button>
+ </div>
+</section>
+<section id="expense" class="hidden">
+ <h2 class="section-title">Registrar despesa</h2>
+ <div class="panel">
+  <label for="expenseName">Descrição da despesa</label><input id="expenseName" placeholder="Ex.: aluguel, produtos, energia">
+  <div class="grid2"><div><label for="expenseValue">Valor (R$)</label><input id="expenseValue" type="number" min="0.01" step="0.01" placeholder="0,00"></div><div><label for="expenseDate">Data</label><input id="expenseDate" type="date"></div></div>
+  <div class="grid2"><div><label for="expenseCategory">Categoria</label><select id="expenseCategory"><option>Produtos</option><option>Aluguel</option><option>Água e energia</option><option>Internet/telefone</option><option>Manutenção</option><option>Salários/comissões</option><option>Impostos</option><option>Outros</option></select></div><div><label for="expensePayment">Pagamento</label><select id="expensePayment"><option>Pix</option><option>Dinheiro</option><option>Cartão</option><option>Boleto</option><option>Outro</option></select></div></div>
+  <label for="expenseNote">Observação (opcional)</label><input id="expenseNote" placeholder="Detalhes adicionais">
+  <button class="btn" onclick="saveExpense()">Salvar despesa</button>
+ </div>
+</section>
+<section id="history" class="hidden">
+ <h2 class="section-title">Histórico de movimentações</h2>
+ <div class="panel">
+  <div class="filter"><input id="monthFilter" type="month"><button class="btn secondary" style="margin:0;flex:0 0 auto" onclick="render()">Filtrar</button></div>
+  <div id="historyList" style="margin-top:10px"></div>
+ </div>
+ <div class="panel"><h3 style="margin-top:0">Backup e relatórios</h3><div class="toolbar"><button class="btn secondary" onclick="exportCSV()">Exportar CSV</button><button id="backupButton" class="btn secondary" onclick="backup()">Baixar backup</button></div><label id="restoreBackupLabel" class="btn secondary" style="display:block;text-align:center;cursor:pointer">Restaurar backup JSON<input type="file" accept="application/json" onchange="restoreBackup(event)" hidden></label><p class="notice">Os dados são compartilhados na nuvem entre os acessos autorizados. O backup JSON é uma cópia adicional de segurança.</p></div>
+</section>
+<div id="ownerTools" class="panel hidden" style="margin-top:18px">
+ <h3 style="margin-top:0">Acesso em nuvem</h3>
+ <p class="notice">Contas e permissões são administradas no Supabase. O sócio tem somente leitura; o proprietário pode gerenciar movimentações.</p>
+</div>
+</main>
+<nav class="bottom">
+ <button class="active" data-page="dashboard" onclick="showPage('dashboard')"><span>▦</span>Resumo</button>
+ <button data-page="entry" onclick="showPage('entry')"><span>＋</span>Entrada</button>
+ <button data-page="expense" onclick="showPage('expense')"><span>－</span>Despesa</button>
+ <button data-page="history" onclick="showPage('history')"><span>☷</span>Histórico</button>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./cloud-config.js"></script>
+<script>
+let supabaseClient=null;
+let activeRole='partner';
+let currentUser=null;
+let shopId=null;
+// Fail closed: somente o papel owner recebe controles de escrita.
+const normalizeRole = role => {
+ const value=String(role||'').trim().toLowerCase();
+ if(value==='owner') return 'owner';
+ if(['partner','viewer','read_only','readonly'].includes(value)) return 'partner';
+ return null;
+};
+const isOwner=()=>activeRole==='owner';
+const CLOUD_URL=window.BARBOSA_SUPABASE_URL;
+const CLOUD_KEY=window.BARBOSA_SUPABASE_ANON_KEY;
+if(window.supabase && CLOUD_URL && CLOUD_KEY) supabaseClient=window.supabase.createClient(CLOUD_URL,CLOUD_KEY);
+const SERVICES=[
+ ['Degradê',25],['Social',20],['Barba',15],['Pezinho',5],
+ ['Corte + Desondulação',45],['Corte + Barba e Sobrancelha',40],
+ ['Nevou',95],['Corte Reflexo Alinhado',85],['Corte + Pigmentação',45],['Corte + Luzes',75]
+];
+const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const today=()=>new Date().toISOString().slice(0,10);
+let records=[];
+let selected=[];
+async function loadRecords(){
+ if(!supabaseClient||!shopId)return;
+ const {data,error}=await supabaseClient.from('transactions').select('*').eq('shop_id',shopId).order('transaction_date',{ascending:false}).order('created_at',{ascending:false});
+ if(error)throw error;
+ records=(data||[]).map(r=>({...r,date:r.transaction_date,amount:Number(r.amount)}));render();
+}
+async function persist(){await loadRecords()}
+function renderServices(){
+ document.getElementById('services').innerHTML=SERVICES.map(([name,price],i)=>`<button class="service ${selected.includes(i)?'selected':''}" onclick="toggleService(${i})"><b>${name}</b><span>${money(price)}</span></button>`).join('');
+ document.getElementById('selectedList').innerHTML=selected.map(i=>`<span class="chip">${SERVICES[i][0]}</span>`).join('');
+ document.getElementById('serviceTotal').textContent=money(selected.reduce((s,i)=>s+SERVICES[i][1],0));
+}
+function toggleService(i){if(!isOwner())return;selected=selected.includes(i)?selected.filter(x=>x!==i):[...selected,i];renderServices()}
+function showPage(page){
+ if(!isOwner()&&['entry','expense'].includes(page)){showPage('dashboard');return}
+ document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+ document.getElementById(page).classList.remove('hidden');
+ document.querySelectorAll('.bottom button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ if(page==='entry')renderServices(); if(page==='history')render();
+}
+async function saveEntry(){
+ if(!isOwner()){alert('Somente o proprietário pode registrar entradas.');return}
+ if(!selected.length){alert('Selecione pelo menos um serviço.');return}
+ const services=selected.map(i=>({name:SERVICES[i][0],price:SERVICES[i][1]}));
+ const row={shop_id:shopId,type:'in',date:document.getElementById('entryDate').value||today(),description:services.map(s=>s.name).join(' + '),services,amount:services.reduce((a,s)=>a+s.price,0),client:document.getElementById('client').value.trim(),payment:document.getElementById('payment').value,note:document.getElementById('entryNote').value.trim()};
+ const {error}=await supabaseClient.from('transactions').insert((({date,...rest})=>({...rest,transaction_date:date}))(row));
+ if(error){alert('Não foi possível salvar: '+error.message);return}
+ selected=[];['client','entryNote'].forEach(id=>document.getElementById(id).value='');renderServices();await loadRecords();showPage('dashboard');
+}
+async function saveExpense(){
+ if(!isOwner()){alert('Somente o proprietário pode registrar despesas.');return}
+ const name=document.getElementById('expenseName').value.trim(),amount=Number(document.getElementById('expenseValue').value);
+ if(!name||!amount||amount<=0){alert('Informe a descrição e um valor válido.');return}
+ const row={shop_id:shopId,type:'out',date:document.getElementById('expenseDate').value||today(),description:name,amount,category:document.getElementById('expenseCategory').value,payment:document.getElementById('expensePayment').value,note:document.getElementById('expenseNote').value.trim()};
+ const {error}=await supabaseClient.from('transactions').insert((({date,...rest})=>({...rest,transaction_date:date}))(row));
+ if(error){alert('Não foi possível salvar: '+error.message);return}
+ ['expenseName','expenseValue','expenseNote'].forEach(id=>document.getElementById(id).value='');await loadRecords();showPage('dashboard');
+}
+function transactionHTML(r){return `<div class="transaction"><div style="min-width:0"><b>${r.type==='in'?'＋':'－'} ${escapeHTML(r.description)}</b><small>${String(r.date||r.transaction_date||'').split('-').reverse().join('/')} · ${escapeHTML(r.payment||'')}${r.client?' · '+escapeHTML(r.client):''}</small></div><div style="display:flex;align-items:center;gap:5px"><span class="amount ${r.type==='in'?'plus':'minus'}">${r.type==='in'?'+':'−'} ${money(r.amount)}</span>${isOwner()?`<button class=\"del\" title=\"Excluir\" onclick=\"removeRecord('${r.id}')\">×</button>`:''}</div></div>`}
+function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function removeRecord(id){if(!isOwner()){alert('Somente o proprietário pode excluir movimentações.');return}if(confirm('Excluir esta movimentação?')){const {error}=await supabaseClient.from('transactions').delete().eq('id',id);if(error){alert('Falha ao excluir: '+error.message);return}await loadRecords()}}
+function render(){
+ const month=today().slice(0,7),monthly=records.filter(r=>r.date.startsWith(month));
+ const ins=monthly.filter(r=>r.type==='in'),outs=monthly.filter(r=>r.type==='out');
+ const sum=a=>a.reduce((s,r)=>s+Number(r.amount),0);
+ document.getElementById('monthIn').textContent=money(sum(ins));document.getElementById('monthOut').textContent=money(sum(outs));document.getElementById('monthBalance').textContent=money(sum(ins)-sum(outs));document.getElementById('monthCount').textContent=ins.length;
+ document.getElementById('recentList').innerHTML=records.length?records.slice(0,6).map(transactionHTML).join(''):'<div class="empty">Nenhuma movimentação registrada.</div>';
+ const filter=document.getElementById('monthFilter').value;
+ const list=filter?records.filter(r=>r.date.startsWith(filter)):records;
+ document.getElementById('historyList').innerHTML=list.length?list.map(transactionHTML).join(''):'<div class="empty">Nenhuma movimentação neste período.</div>';
+}
+function exportCSV(){
+ const rows=[['Tipo','Data','Descrição','Cliente','Categoria','Forma de pagamento','Valor','Observação'],...records.map(r=>[r.type==='in'?'Entrada':'Despesa',r.date,r.description,r.client||'',r.category||'',r.payment||'',Number(r.amount).toFixed(2).replace('.',','),r.note||''])];
+ const csv='\ufeff'+rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+ download(new Blob([csv],{type:'text/csv;charset=utf-8'}),'barbosa-fluxo-caixa.csv');
+}
+function backup(){if(!isOwner()){alert('Somente o proprietário pode fazer backup.');return}download(new Blob([JSON.stringify({app:'Barbosa Fluxo de Caixa',version:2,records},null,2)],{type:'application/json'}),'backup-barbosa.json')}
+async function restoreBackup(e){
+ if(!isOwner()){alert('Somente o proprietário pode restaurar backup.');e.target.value='';return}
+ const f=e.target.files[0];if(!f)return;
+ const reader=new FileReader();reader.onload=async()=>{try{
+  const data=JSON.parse(reader.result);if(!Array.isArray(data.records))throw Error();
+  if(!confirm('Importar os registros do backup para o caixa compartilhado? Os dados existentes serão mantidos.'))return;
+  const rows=data.records.map(r=>({shop_id:shopId,type:r.type,date:r.date,description:r.description,amount:r.amount,client:r.client||null,category:r.category||null,payment:r.payment||null,note:r.note||null,services:r.services||null}));
+  const {error}=await supabaseClient.from('transactions').insert(rows.map(({date,...r})=>({...r,transaction_date:date})));if(error)throw error;
+  await loadRecords();alert('Backup importado para a nuvem.');
+ }catch(err){alert('Não foi possível importar o backup: '+(err.message||'arquivo inválido'))}finally{e.target.value=''}};
+ reader.readAsText(f)
+}
+function download(blob,name){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+async function authenticateOwner(){
+ const email=document.getElementById('loginEmail').value.trim();
+ const password=document.getElementById('ownerPassword').value;
+ const errorBox=document.getElementById('authError');errorBox.textContent='';
+ if(!supabaseClient){errorBox.textContent='Configuração Supabase ausente. Verifique cloud-config.js.';return}
+ if(!email||!password){errorBox.textContent='Informe e-mail e senha.';return}
+ const authButton=document.getElementById('authButton');
+ authButton.disabled=true;authButton.textContent='Entrando…';
+ const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+ authButton.disabled=false;authButton.textContent='Entrar';
+ if(error){errorBox.textContent='Não foi possível entrar: '+error.message;return}
+ currentUser=data.user;
+ const {data:membership,error:memberError}=await supabaseClient.from('shop_members').select('shop_id,role').eq('user_id',currentUser.id).single();
+ if(memberError||!membership){await supabaseClient.auth.signOut();errorBox.textContent='Usuário sem permissão vinculada à Barbearia Barbosa. Peça ao proprietário para verificar o cadastro.';return}
+ const normalizedRole=normalizeRole(membership.role);
+ if(!normalizedRole||!membership.shop_id){
+  await supabaseClient.auth.signOut();
+  currentUser=null;
+  errorBox.textContent='Vínculo sem papel válido. O campo role deve conter owner ou partner e apontar para a loja correta.';
+  return;
+ }
+ activeRole=normalizedRole;shopId=membership.shop_id;
+ try{
+  await loadRecords();
+  supabaseClient.channel('barbosa-cash-live')
+   .on('postgres_changes',{event:'*',schema:'public',table:'transactions',filter:'shop_id=eq.'+shopId},()=>loadRecords())
+   .subscribe();
+ }catch(e){
+  await supabaseClient.auth.signOut();
+  currentUser=null;shopId=null;records=[];
+  errorBox.textContent='Erro ao carregar o caixa: '+e.message;
+  return;
+ }
+ document.getElementById('ownerPassword').value='';
+ document.getElementById('authScreen').classList.add('hidden');applyRoleUI();showPage('dashboard');
+}
+function applyRoleUI(){
+ const owner=isOwner();
+ document.querySelector('header .brand p').textContent=owner?'Gestão de caixa • Proprietário':'Acesso do sócio • Somente visualização';
+ document.querySelector('.lock-btn').textContent='Sair';
+ document.querySelectorAll('.bottom [data-page="entry"],.bottom [data-page="expense"]').forEach(el=>el.classList.toggle('hidden',!owner));
+ document.querySelectorAll('#dashboard .toolbar button').forEach(el=>el.classList.toggle('hidden',!owner));
+ // As telas de escrita ficam ocultas para o sócio.
+ document.getElementById('entry').classList.toggle('hidden',!owner);
+ document.getElementById('expense').classList.toggle('hidden',!owner);
+ document.getElementById('ownerTools').classList.toggle('hidden',!owner);
+ document.getElementById('partnerReadOnlyNote').classList.toggle('hidden',owner);
+ document.getElementById('restoreBackupLabel').classList.toggle('hidden',!owner);
+ document.getElementById('backupButton').classList.toggle('hidden',!owner);
+ render();
+}
+async function lockApp(){if(supabaseClient)await supabaseClient.auth.signOut();currentUser=null;shopId=null;records=[];activeRole='partner';document.getElementById('authScreen').classList.remove('hidden');document.getElementById('ownerPassword').value='';document.getElementById('authError').textContent='';render()}
+document.getElementById('ownerPassword').addEventListener('keydown',e=>{if(e.key==='Enter')authenticateOwner()});
+document.getElementById('entryDate').value=today();document.getElementById('expenseDate').value=today();document.getElementById('monthFilter').value=today().slice(0,7);
+renderServices();render();
+
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+</script>
+</body></html>

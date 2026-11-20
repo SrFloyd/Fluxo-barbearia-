@@ -1,0 +1,9 @@
+{
+  "name": "Barbosa Barbearia - Gestão de Caixa",
+  "short_name": "Barbosa Caixa",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101114",
+  "theme_color": "#111111",
+  "description": "Controle de entradas, despesas e fluxo de caixa da barbearia."
+}
